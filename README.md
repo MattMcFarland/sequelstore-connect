@@ -1,5 +1,9 @@
 # An express-session store for Sequelize.js
 
+[![npm](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/sequelstore-connect)
+[![Travis](https://img.shields.io/travis/rust-lang/rust.svg)](https://travis-ci.org/MattMcFarland/sequelstore-connect)
+[![Coverage Status](https://coveralls.io/repos/MattMcFarland/sequelstore-connect/badge.svg?branch=master&service=github)](https://coveralls.io/github/MattMcFarland/sequelstore-connect?branch=master)
+
 Sequelize session store for [Connect](https://github.com/senchalabs/connect) and [Express](http://expressjs.com/)
 
 ## Compatibility
@@ -158,8 +162,43 @@ app.use(session({
 
     npm install && npm test
 
+# Contributing
 
-## Acknowledgements
+After cloning this repo, ensure dependencies are installed by running:
+
+```sh
+npm install
+```
+
+This library is written in ES6 and uses [Babel](http://babeljs.io/) for ES5
+transpilation and [Flow](http://flowtype.org/) for type safety. Widely
+consumable JavaScript can be produced by running:
+
+```sh
+npm run build
+```
+
+Once `npm run build` has run, you may `import` or `require()` directly from
+node.
+
+After developing, the full test suite can be evaluated by running:
+
+```sh
+npm test
+```
+
+While actively developing, we recommend running
+
+```sh
+npm run watch
+```
+
+in a terminal. This will watch the file system run lint, tests, and type
+checking automatically whenever you save a js file.
+
+To lint the JS files and run type interface checks run `npm run lint`.
+
+# Acknowledgements
 
 The following sources were heavily studied and/or used to product this library.
 
