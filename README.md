@@ -1,6 +1,6 @@
 # An express-session store for Sequelize.js
 
-[![npm](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/sequelstore-connect)
+[![npm](https://img.shields.io/npm/v/sequelstore-connect.svg)](https://www.npmjs.com/package/sequelstore-connect)
 [![Travis](https://img.shields.io/travis/rust-lang/rust.svg)](https://travis-ci.org/MattMcFarland/sequelstore-connect)
 [![Coverage Status](https://coveralls.io/repos/MattMcFarland/sequelstore-connect/badge.svg?branch=master&service=github)](https://coveralls.io/github/MattMcFarland/sequelstore-connect?branch=master)
 
