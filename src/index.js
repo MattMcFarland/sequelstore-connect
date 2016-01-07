@@ -1,3 +1,10 @@
+/* @flow */
+
+import {
+  path,
+  winston
+} from './modules';
+
 /**
  * Connect Sequelize
  * Author: Matt McFarland <contact@mattmcfarland.com>
@@ -18,10 +25,11 @@
  *      - by TJ Holowaychuk <tj@vision-media.ca>
  *      - MIT Licensed
  */
-// import { transforms } from './utils';
-const path = require('path');
-const debug = require('debug')('connect:sequelize');
+
+winston.add(winston.transports.File, { filename: 'sequelstore.index.log' });
+winston.remove(winston.transports.Console);
 const noop = function () { };
+
 
 type Options = {
   fallbackMemory: any;
@@ -29,11 +37,6 @@ type Options = {
   database: any;
   ttl: any;
   autoRemoveInterval: number;
-  removeInterval: any;
-  all: any;
-  destroy: any;
-  clear: any;
-  length: any;
 }
 type ExpressSession = {
   Store: any;
@@ -78,10 +81,12 @@ type ConnectStore = {
  * @api public
  */
 
-module.exports = function connectSequelize(connect:ExpressSession) {
+module.exports = function (connect:ExpressSession):any {
   const Store = connect.Store || connect.session.Store;
   const MemoryStore = connect.MemoryStore || connect.session.MemoryStore;
-  const defaults = {
+  const defaults:Options = {
+    database: Object,
+    fallbackMemory: false,
     transform: JSON.stringify,
     state: {},
     ttl: 1209600, // 14 days
@@ -91,7 +96,6 @@ module.exports = function connectSequelize(connect:ExpressSession) {
   class SequelStoreError extends Error {
     constructor({message}) {
       super(message);
-      this.filename = path.join(__dirname, 'index.js');
       this.name = 'SequelizeStore Exception';
       this.message = message;
     }
@@ -102,26 +106,40 @@ module.exports = function connectSequelize(connect:ExpressSession) {
 
   class SequelStore extends Store<ConnectStore> {
 
-    constructor(options = {}) {
+    constructor(options:Options) {
       /* Fallback */
       if (options.fallbackMemory && MemoryStore) {
         return new MemoryStore();
       }
       super(options);
+
+      this.setupListeners = this.setupListeners.bind(this);
+      this.applyProps = this.applyProps.bind(this);
+      this.all = this.all.bind(this);
+      this.destroy = this.destroy.bind(this);
+      this.clear = this.clear.bind(this);
+      this.length = this.length.bind(this);
+      this.get = this.get.bind(this);
+      this.set = this.set.bind(this);
+      this.touch = this.touch.bind(this);
+      this.clearExpiredSessions = this.clearExpiredSessions.bind(this);
+      this.startExpiringSessions = this.startExpiringSessions.bind(this);
+      this.stopExpiringSessions = this.stopExpiringSessions.bind(this);
+
       this.setupListeners();
       this.applySessionModel(options);
       this.applyProps(options);
       this.startExpiringSessions();
     }
 
-    setupListeners = () => {
+    setupListeners() {
       this.on('error', (err => (handleError(err))));
-    };
+    }
 
-    applyProps = (options) => {
+    applyProps(options) {
       this.options = Object.assign(defaults, options);
       return this;
-    };
+    }
 
     // Apply the sessionModel in the following order:
     //
@@ -132,7 +150,7 @@ module.exports = function connectSequelize(connect:ExpressSession) {
     //    create a DefaultSessionModel and append it to the user db if
     //    neither of the former parameters are used.
     //
-    applySessionModel = (options) => {
+    applySessionModel(options) {
       if (!options.database) {
         return this.emit('error', { message: 'No database'});
       }
@@ -154,8 +172,8 @@ module.exports = function connectSequelize(connect:ExpressSession) {
      * Retrieve all sessions from store as an array.
      * @param cb  {Function} cb(error, sessions)
      */
-    all = (cb = noop) => {
-      debug('session:all');
+    all(cb = noop) {
+      winston.log('debug', 'session:all');
       return this.sessionModel.findAll().asCallback(cb);
     }
 
@@ -166,14 +184,14 @@ module.exports = function connectSequelize(connect:ExpressSession) {
      * @param sid
      * @param cb
      */
-    destroy = (sid:string, cb = noop) => {
-      debug('session:destroy %s', sid);
+    destroy(sid:string, cb = noop) {
+      winston.log('debug', 'session:destroy %s', sid);
       return this.sessionModel.find(
         {where: {sid}}
       ).then(session => {
         // If the session wasn't found, then consider it destroyed already.
         if (session === null) {
-          debug('Session not found, assuming destroyed %s', sid);
+          winston.log('debug', 'Session not found, assuming destroyed %s', sid);
           return null;
         }
         return session.destroy();
@@ -185,7 +203,7 @@ module.exports = function connectSequelize(connect:ExpressSession) {
      * is cleared.
      * @param cb
      */
-    clear = (cb = noop) => {
+    clear(cb = noop) {
       return this.sessionModel.destroy().asCallback(cb);
     }
 
@@ -194,8 +212,8 @@ module.exports = function connectSequelize(connect:ExpressSession) {
      * the store. The callback should be called as callback(error, len).
      * @param cb
      */
-    length = (cb = noop) => {
-      debug('session:length');
+    length(cb = noop) {
+      winston.log('debug', 'session:length');
       return this.sessionModel.count().asCallback(cb);
     }
 
@@ -209,16 +227,17 @@ module.exports = function connectSequelize(connect:ExpressSession) {
      * @param sid
      * @param cb
      */
-    get = (sid:string, cb = noop) => {
-      debug('session:get', sid);
+    get(sid:string, cb = noop) {
+      winston.log('debug', 'session:get', sid);
       return this.sessionModel.find(
         { where: { sid } }
       ).then(session => {
         if (!session) {
-          debug('Did not find session %s', sid);
+          winston.log('debug', 'Did not find session %s', sid);
           return null;
         }
-        debug('FOUND %s with data %s', session.sid, session.data);
+        winston.log('debug', 'FOUND %s with data %s',
+          session.sid, session.data);
 
         return this.transform(session.data);
       }).asCallback(cb);
@@ -234,10 +253,10 @@ module.exports = function connectSequelize(connect:ExpressSession) {
      * @param session
      * @param cb
      */
-    set = (sid:string, session:string, cb = noop) => {
+    set(sid:string, session:string, cb = noop) {
       var sessionModel = this.sessionModel;
 
-      debug('INSERT "%s"', sid);
+      winston.log('debug', 'INSERT "%s"', sid);
       let stringData = this.transform(session);
       let expires;
 
@@ -258,7 +277,7 @@ module.exports = function connectSequelize(connect:ExpressSession) {
         }
         return session;
       }).asCallback(cb);
-    };
+    }
 
     /**
      * This recommended method is used to "touch" a given session given a
@@ -271,8 +290,8 @@ module.exports = function connectSequelize(connect:ExpressSession) {
      * @param session
      * @param cb
      */
-    touch = (sid:string, session:string, cb = noop) => {
-      debug('session:touch', sid);
+    touch(sid:string, session:string, cb = noop) {
+      winston.log('debug', 'session:touch', sid);
       var expires;
 
       if (session.cookie && session.cookie.expires) {
@@ -287,8 +306,8 @@ module.exports = function connectSequelize(connect:ExpressSession) {
 
     }
 
-    clearExpiredSessions = (cb) => {
-      debug('session:clearExpiredSessions');
+    clearExpiredSessions(cb) {
+      winston.log('debug', 'session:clearExpiredSessions');
       return this.sessionModel.destroy(
         {where: {
           expires: {
@@ -299,8 +318,8 @@ module.exports = function connectSequelize(connect:ExpressSession) {
       ).asCallback(cb);
     }
 
-    startExpiringSessions = () => {
-      debug('session:startExpiringSessions');
+    startExpiringSessions() {
+      winston.log('debug', 'session:startExpiringSessions');
       this.stopExpiringSessions();
       if (this.autoRemoveInterval > 0) {
         this.removeInterval = setInterval(
@@ -310,8 +329,8 @@ module.exports = function connectSequelize(connect:ExpressSession) {
       }
     }
 
-    stopExpiringSessions = () => {
-      debug('session:stopExpiringSessions');
+    stopExpiringSessions() {
+      winston.log('debug', 'session:stopExpiringSessions');
       if (this.removeInterval) {
         clearInterval(this.removeInterval);
       }

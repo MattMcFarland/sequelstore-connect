@@ -46,7 +46,8 @@
     "sequelize-cli": "^2.2.1",
     "serve-favicon": "~2.3.0",
     "sqlite3": "^3.1.1",
-    "supertest": "^1.1.0"
+    "supertest": "^1.1.0",
+    "winston": "^2.1.1"
   },
   "keywords": [
     "session",
@@ -62,6 +63,7 @@
   "author": "Matt McFarland",
   "license": "MIT",
   "dependencies": {
+    "debug": "^2.2.0",
     "mocha": "^2.3.4"
   },
   "repository": {

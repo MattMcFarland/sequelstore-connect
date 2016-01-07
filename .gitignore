@@ -453,7 +453,8 @@ bower_components
 # distribution
 lib
 
-rasterizer-test.log
 *-test.log
 data/*.png
 data/*.json
+
+sequelstore.index.log
