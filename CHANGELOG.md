@@ -1,3 +1,9 @@
+## v1.1.0
+
+#### Changes:
+ - Switched from using src to using lib
+
+
 ## v1.0.1-4
 
 #### Fixes:
