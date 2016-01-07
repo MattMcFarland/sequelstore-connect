@@ -1,4 +1,4 @@
-## v1.0.1-3
+## v1.0.1-4
 
 #### Fixes:
  - Add travis/coveralls links
