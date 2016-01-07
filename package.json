@@ -1,6 +1,6 @@
 {
   "name": "sequelstore-connect",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "An express-session store for Sequelize.js",
   "main": "lib/index.js",
   "scripts": {
@@ -17,6 +17,12 @@
   "options": {
     "mocha": "--require tasks/mocha-bootload src/**/__tests__/**/*.js"
   },
+  "files": [
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "lib"
+  ],
   "devDependencies": {
     "babel": "^6.3.26",
     "babel-cli": "^6.3.17",
