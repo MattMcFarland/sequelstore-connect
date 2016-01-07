@@ -134,7 +134,7 @@
     "no-path-concat": 2,
     "no-process-exit": 0,
     "no-restricted-modules": 0,
-    "no-sync": 0,
+    "no-sync": 2,
     "brace-style": [
       2,
       "1tbs",

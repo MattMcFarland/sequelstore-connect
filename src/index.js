@@ -116,12 +116,12 @@ module.exports = function connectSequelize(connect:ExpressSession) {
 
     setupListeners = () => {
       this.on('error', (err => (handleError(err))));
-    }
+    };
 
     applyProps = (options) => {
       this.options = Object.assign(defaults, options);
       return this;
-    }
+    };
 
     // Apply the sessionModel in the following order:
     //
