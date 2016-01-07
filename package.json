@@ -7,6 +7,7 @@
     "prepublish": "npm test && npm run build",
     "test": "npm run lint && npm run check && mocha $npm_package_options_mocha",
     "lint": "eslint src",
+    "testonly": "npm run lint && npm test",
     "check": "flow check",
     "build": "rm -rf lib/* && babel src --ignore __tests__ --out-dir lib",
     "watch": "babel tasks/watch.js | node",
