@@ -1,6 +1,6 @@
 {
   "name": "sequelstore-connect",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "An express-session store for Sequelize.js",
   "main": "lib/index.js",
   "scripts": {
@@ -45,6 +45,7 @@
     "figlet": "^1.1.1",
     "flow-bin": "^0.20.1",
     "isparta": "^4.0.0",
+    "mocha": "^2.3.4",
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
