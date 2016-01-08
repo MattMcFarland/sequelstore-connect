@@ -129,8 +129,8 @@ module.exports = function (connect:ExpressSession):any {
         return this.sessionModel.sync();
       };
       this.setupListeners();
-      this.applySessionModel(options);
       this.applyProps(options);
+      this.applySessionModel(options);
       this.startExpiringSessions();
     }
 
@@ -148,8 +148,8 @@ module.exports = function (connect:ExpressSession):any {
     //    passed in database.ConnectSession first
     //    any model passed in under the 'sessionModel' param.
     //    -- or --
-    //    fallback to the default model named DefaultSessionModel
-    //    create a DefaultSessionModel and append it to the user db if
+    //    fallback to the default model named DefaultSession
+    //    create a DefaultSession and append it to the user db if
     //    neither of the former parameters are used.
     //
     applySessionModel(options) {
@@ -164,6 +164,7 @@ module.exports = function (connect:ExpressSession):any {
       } else {
         this.sessionModel = options.database.import(
           path.join(__dirname, 'sessionModel'));
+          options.database[this.sessionModel.name] = this.sessionModel;
       }
 
     }

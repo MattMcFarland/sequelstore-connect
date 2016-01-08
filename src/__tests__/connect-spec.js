@@ -161,6 +161,7 @@ describe('SequelStore Bootstrap', function () {
       it('should create a model for you if you do not provide one.', () => {
         fallbackStore = new SequelizeStore({database: fallbackDB});
         expect(fallbackStore.sessionModel.name).to.equal('DefaultSession');
+        assertOK(fallbackDB.DefaultSession);
       });
 
     });
