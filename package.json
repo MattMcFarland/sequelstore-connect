@@ -1,6 +1,6 @@
 {
   "name": "sequelstore-connect",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "An express-session store for Sequelize.js",
   "main": "lib/index.js",
   "scripts": {

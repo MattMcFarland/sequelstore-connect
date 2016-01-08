@@ -165,6 +165,7 @@ module.exports = function (connect:ExpressSession):any {
         this.sessionModel = options.database.import(
           path.join(__dirname, 'sessionModel'));
           options.database[this.sessionModel.name] = this.sessionModel;
+        this.sessionModel.sync();
       }
 
     }
@@ -240,7 +241,7 @@ module.exports = function (connect:ExpressSession):any {
         winston.log('debug', 'FOUND %s with data %s',
           session.sid, session.data);
 
-        return this.transform(session.data);
+        return this.options.transform(session.data);
       }).asCallback(cb);
     }
 
@@ -258,7 +259,7 @@ module.exports = function (connect:ExpressSession):any {
       var sessionModel = this.sessionModel;
 
       winston.log('debug', 'INSERT "%s"', sid);
-      let stringData = this.transform(session);
+      let stringData = this.options.transform(session);
       let expires;
 
       if (session.cookie && session.cookie.expires) {
@@ -272,7 +273,7 @@ module.exports = function (connect:ExpressSession):any {
           data: stringData, expires: expires
         }}).spread(ns => {
         if (ns['data'] !== stringData) {
-          ns['data'] = this.transform(ns);
+          ns['data'] = this.options.transform(ns);
           ns['expires'] = expires;
           return ns.save().return(ns);
         }
