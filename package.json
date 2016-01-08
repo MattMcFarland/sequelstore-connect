@@ -1,6 +1,6 @@
 {
   "name": "sequelstore-connect",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "An express-session store for Sequelize.js",
   "main": "lib/index.js",
   "scripts": {
@@ -56,6 +56,9 @@
     "supertest": "^1.1.0",
     "winston": "^2.1.1"
   },
+  "peerDependencies": {
+    "sequelize": "^3.15.1"
+  },
   "keywords": [
     "session",
     "express-session",
@@ -69,11 +72,6 @@
   ],
   "author": "Matt McFarland",
   "license": "MIT",
-  "dependencies": {
-    "winston": "^2.1.1",
-    "sqlite3": "^3.1.1",
-    "sequelize": "^3.15.1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MattMcFarland/sequelstore-connect.git"

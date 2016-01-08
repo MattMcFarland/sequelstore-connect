@@ -125,7 +125,9 @@ module.exports = function (connect:ExpressSession):any {
       this.clearExpiredSessions = this.clearExpiredSessions.bind(this);
       this.startExpiringSessions = this.startExpiringSessions.bind(this);
       this.stopExpiringSessions = this.stopExpiringSessions.bind(this);
-
+      this.sync = function () {
+        return this.sessionModel.sync();
+      };
       this.setupListeners();
       this.applySessionModel(options);
       this.applyProps(options);
@@ -163,9 +165,7 @@ module.exports = function (connect:ExpressSession):any {
         this.sessionModel = options.database.import(
           path.join(__dirname, 'sessionModel'));
       }
-      this.sync = function () {
-        return this.sessionModel.sync();
-      };
+
     }
 
     /**
