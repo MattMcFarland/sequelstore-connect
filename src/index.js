@@ -125,15 +125,15 @@ module.exports = function (connect:ExpressSession):any {
       this.clearExpiredSessions = this.clearExpiredSessions.bind(this);
       this.startExpiringSessions = this.startExpiringSessions.bind(this);
       this.stopExpiringSessions = this.stopExpiringSessions.bind(this);
-      this.sync = function () {
-        return this.sessionModel.sync();
-      };
+      this.sync = this.sync.bind(this);
       this.setupListeners();
       this.applyProps(options);
       this.applySessionModel(options);
       this.startExpiringSessions();
     }
-
+    sync() {
+      return this.sessionModel.sync();
+    }
     setupListeners() {
       this.on('error', (err => (handleError(err))));
     }
@@ -159,14 +159,17 @@ module.exports = function (connect:ExpressSession):any {
 
       if (options.database.models.ConnectSession) {
         this.sessionModel = options.database.models.ConnectSession;
+        this.sessionModel.sync();
       } else if (options.sessionModel) {
-        this.sessionModel = Object.assign({}, options.sessionModel);
+        this.sessionModel = options.sessionModel;
+        this.sessionModel.sync();
       } else {
         this.sessionModel = options.database.import(
           path.join(__dirname, 'sessionModel'));
           options.database[this.sessionModel.name] = this.sessionModel;
         this.sessionModel.sync();
       }
+
 
     }
 

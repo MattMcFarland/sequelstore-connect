@@ -2,7 +2,7 @@
  * Used to test custom model loading
  */
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('CustomModel', {
+  return sequelize.define('CustomSession', {
     sid: {
       type: DataTypes.STRING,
       primaryKey: true

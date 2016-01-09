@@ -55,6 +55,7 @@
     "serve-favicon": "~2.3.0",
     "sqlite3": "^3.1.1",
     "supertest": "^1.1.0",
+    "supertest-session": "^2.0.0",
     "winston": "^2.1.1"
   },
   "peerDependencies": {

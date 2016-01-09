@@ -1,4 +1,5 @@
 export const session = require('express-session');
+export const sessionTester = require('supertest-session');
 export const path = require('path');
 export const Sequelize = require('sequelize');
 export const express = require('express');
@@ -7,5 +8,6 @@ export const cookieParser = require('cookie-parser');
 export const bodyParser = require('body-parser');
 export const compression = require('compression');
 export const passport = require('passport');
-
+export const LocalStrategy = require('passport-local');
 export const SequelizeStore = require('../')(session);
+export const crypto = require('crypto');
