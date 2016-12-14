@@ -244,7 +244,7 @@ module.exports = function (connect:ExpressSession):any {
         winston.log('debug', 'FOUND %s with data %s',
           session.sid, session.data);
 
-        return this.options.transform(session.data);
+        return JSON.parse(session.data);
       }).asCallback(cb);
     }
 
