@@ -451,7 +451,7 @@ raw*.json
 bower_components
 
 # distribution
-lib
+#lib
 
 *-test.log
 data/*.png
